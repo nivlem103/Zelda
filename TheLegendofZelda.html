@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<!--https://raw.githubusercontent.com/dgatewood/ZeldaTutorials/main/Lesson%201/tiles-overworld.png--> 
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <style>
+        *{
+            padding:0;
+            margin:0;
+        }
+
+        canvas{
+            border: 1rem solid #888;
+            background: #000;
+            position: absolute;
+            top: 25%;
+            left: 25%;
+            margin: 2rem auto;
+            transform: scale(2.5,2.5);
+        }
+
+    </style>
+</head>
+<body onload="startGame()">
+
+    <script>
+    
+        let worldTiles = new Image();
+        worldTiles.src = "https://raw.githubusercontent.com/dgatewood/ZeldaTutorials/main/Lesson%201/tiles-overworld.png";
+        //"tiles-overworld.png";
+        let link1 = new Image();
+        link1.src = "https://raw.githubusercontent.com/dgatewood/ZeldaTutorials/main/Lesson%203/link.png";
+        //link.png";
+        
+        var myPlayer;
+
+
+
+        function startGame() {
+            myGameArea.start();
+            myPlayer = new Player(link1,120,130,2);
+            
+        }
+        
+        var myGameArea = {
+            canvas : document.createElement("canvas"),
+            start: function () {
+                this.canvas.width = 256;
+                this.canvas.height = 240;
+                this.context= this.canvas.getContext("2d");
+                document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+                this.interval = setInterval(updateGameArea, 16.667);
+                window.addEventListener('keydown', function (e) {
+                    myGameArea.key = e.keyCode;
+                })
+                window.addEventListener('keyup', function (e) {
+                    myGameArea.key = false;
+                    
+                })
+            }, 
+            clear : function(){
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            }
+        }
+
+       
+
+        function Player(PlayerImg,x,y,z){
+            
+            this.mygamearea = myGameArea;
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.xmove = 0;
+            this.ymove = 0;
+            this.step = true;
+            this.count = 0;
+            this.direction = "up";
+
+            this.update = function(){
+                       
+                if (myGameArea.key == "37" && !collision(this.x-this.z,this.y, map7_7)){
+                    this.x -= this.z;
+                    this.direction = "left";                    
+                    if (this.step){
+                        myGameArea.context.drawImage(PlayerImg, 30, 30, 16, 16, this.x, this.y, 16, 16);
+                        this.count ++;
+                        if (this.count >= 9){
+                            this.step = false;
+                            this.count = 0;
+                        }
+                        
+                    }else {
+                        myGameArea.context.drawImage(PlayerImg, 30, 0, 16, 16, this.x, this.y, 16, 16);
+                        this.count ++;
+                        if (this.count >= 9){
+                            this.step = true;
+                            this.count = 0;
+                        }
+                        
+                    }
+                    
+                    
+                }
+                if (myGameArea.key == "39"&& !collision(this.x+this.z,this.y, map7_7)){
+                    this.x += this.z;
+                    this.direction = "right";
+                    if (this.step){
+                        myGameArea.context.drawImage(PlayerImg, 91, 30, 16, 16, this.x, this.y, 16, 16);
+                        this.count ++;
+                        if (this.count >= 9){
+                        this.step = false;
+                        this.count = 0;
+                    }
+                                            
+                    }else {
+                        myGameArea.context.drawImage(PlayerImg, 91, 0, 16, 16, this.x, this.y, 16, 16);
+                        this.count ++;
+                        if (this.count >= 9){
+                            this.step = true;
+                            this.count = 0;
+                        }
+                    }              
+                }
+
+                if (myGameArea.key == "38"&& !collision(this.x,this.y-this.z, map7_7)){
+                    this.y -= this.z;
+                    this.direction = "down";
+                    if (this.step){
+                        myGameArea.context.drawImage(PlayerImg, 0, 30, 16, 16, this.x, this.y, 16, 16);
+                        this.count ++;
+                        if (this.count >= 9){
+                        this.step = false;
+                        this.count = 0;
+                    }
+                                            
+                    }else {
+                        myGameArea.context.drawImage(PlayerImg, 0, 0, 16, 16, this.x, this.y, 16, 16);
+                        this.count ++;
+                        if (this.count >= 9){
+                            this.step = true;
+                            this.count = 0;
+                        }
+                    }
+                }
+
+                if (myGameArea.key == "40"&& !collision(this.x,this.y+this.z, map7_7)){
+                    this.y += this.z;
+                    this.direction = "up";
+                    if (this.step){
+                        myGameArea.context.drawImage(PlayerImg, 62, 30, 16, 16, this.x, this.y, 16, 16);
+                        this.count ++;
+                        if (this.count >= 9){
+                        this.step = false;
+                        this.count = 0;
+                    }
+                                            
+                    }else {
+                        myGameArea.context.drawImage(PlayerImg, 62, 0, 16, 16, this.x, this.y, 16, 16);
+                        this.count ++;
+                        if (this.count >= 9){
+                            this.step = true;
+                            this.count = 0;
+                        }
+                    }
+                }
+
+            }
+
+            this.draw = function(){
+                if (this.direction == "left") {
+                    myGameArea.context.drawImage(PlayerImg, 30, 0, 16, 16, this.x, this.y, 16, 16);
+                
+                }
+
+                if (this.direction == "right") {
+                    myGameArea.context.drawImage(PlayerImg, 91, 0, 16, 16, this.x, this.y, 16, 16);
+                
+                }
+
+                if (this.direction == "down") {
+                    myGameArea.context.drawImage(PlayerImg, 62, 0, 16, 16, this.x, this.y, 16, 16);
+                
+                }
+
+                if (this.direction == "up") {
+                    myGameArea.context.drawImage(PlayerImg, 0, 0, 16, 16, this.x, this.y, 16, 16);
+                
+                }
+            }
+            
+        }
+
+        function collision(x,y,map){
+            this.x = x;
+            this.y = y;
+
+        	
+	        for(let i = 0; i < map.length; i++){
+		        for(let j = 0; j < map[i].length; j++){
+				    
+                    if(map[i][j] != 2){
+					    if (this.x <= j*16 + 16 && this.x + 12 >= j*16 && this.y + 10 <= i*16 + 16 && this.y + 16 >= i*16 ) {
+						    return true;
+					    }
+				    }
+			    }
+	        }
+
+	        return false;	
+        }
+        
+
+
+        function updateGameArea(){
+            level = map7_7;
+            myGameArea.clear();
+            
+            for(let i = 0; i < level.length; i++){
+                for(let j = 0; j < level[i].length; j++){
+                    myGameArea.context.drawImage(worldTiles, ((level[i][j]%18) * 17) + 1,
+			        (Math.floor(level[i][j]/18) * 17) + 1, 
+			        16, 16, j *16, i *16, 16, 16);
+
+		        }
+	        }
+
+            myPlayer.xmove=0;
+            myPlayer.ymove=0;
+            
+            if (myGameArea.key ) {
+                
+                myPlayer.update();
+            }
+
+            myPlayer.draw();
+
+        }
+
+    let map7_7 = [
+        [ 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22],
+        [ 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22],
+        [ 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22],
+        [ 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22],
+        [ 61, 61, 61, 61, 61, 61, 61,  2,  2, 61, 61, 61, 61, 61, 61, 61],
+        [ 61, 61, 61, 61, 28, 61, 62,  2,  2, 61, 61, 61, 61, 61, 61, 61],
+        [ 61, 61, 61, 62,  2,  2,  2,  2,  2, 61, 61, 61, 61, 61, 61, 61],
+        [ 61, 61, 62,  2,  2,  2,  2,  2,  2, 61, 61, 61, 61, 61, 61, 61],
+        [ 61, 62,  2,  2,  2,  2,  2,  2,  2, 60, 61, 61, 61, 61, 61, 61],
+        [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2],
+        [ 43, 44,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 43, 43],
+        [ 61, 61,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 61, 61],
+        [ 61, 61,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 61, 61],
+        [ 61, 61, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 61, 61],
+        [ 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61]];
+    </script>
+</body>
